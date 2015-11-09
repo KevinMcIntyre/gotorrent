@@ -5,57 +5,51 @@ require('../../../css/main.css');
 import React from "react";
 import {Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn, LinearProgress} from "material-ui";
 let TransferBar = require('../transferbar.js').TransferBar;
+let Torrent = require('../torrent.js').Torrent;
 
 let ipc = electronRequire("ipc");
 
+let ubuntu = {
+    id: 1,
+    name: "ubuntu-14.04.3-desktop-amd64.iso",
+    kBytesCompleted: 1037000,
+    sizeInKBytes: 1050000
+};
+
+let arch = {
+    id: 2,
+    name: "arch-linux-4.3-server-amd64.iso",
+    kBytesCompleted: 20634,
+    sizeInKBytes: 1050000
+};
 export const Transfers = React.createClass({
     getInitialState: function () {
         return {
-            fixedHeader: true,
-            stripedRows: false,
-            showRowHover: false,
-            selectable: true,
-            multiSelectable: true,
-            enableSelectAll: true,
-            deselectOnClickaway: true,
-            height: '100vh'
+            swag: true
         }
     },
     render: function () {
         return (
             <div>
                 <TransferBar />
-                <Table
-                    height={this.state.height}
-                    fixedHeader={this.state.fixedHeader}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable} >
-                    <TableHeader enableSelectAll={this.state.enableSelectAll}>
-                        <TableRow>
-                            <TableHeaderColumn>#</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Size</TableHeaderColumn>
-                            <TableHeaderColumn>Progress</TableHeaderColumn>
-                            <TableHeaderColumn>Download</TableHeaderColumn>
-                            <TableHeaderColumn>Upload</TableHeaderColumn>
-                            <TableHeaderColumn>ETA</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody
-                        deselectOnClickaway={this.state.deselectOnClickaway}
-                        showRowHover={this.state.showRowHover}
-                        stripedRows={this.state.stripedRows}>
-                        <TableRow selected={true}>
-                            <TableRowColumn>1</TableRowColumn>
-                            <TableRowColumn>ubuntu.iso</TableRowColumn>
-                            <TableRowColumn>500 MB</TableRowColumn>
-                            <TableRowColumn><LinearProgress mode="indeterminate"/></TableRowColumn>
-                            <TableRowColumn>249.6 kB/s</TableRowColumn>
-                            <TableRowColumn>0.7 kB/s</TableRowColumn>
-                            <TableRowColumn>2h 8m</TableRowColumn>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <div className="transfers">
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                    <Torrent torrent={ubuntu}/>
+                    <Torrent torrent={arch}/>
+                </div>
             </div>
         );
     }

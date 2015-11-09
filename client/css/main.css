@@ -35,6 +35,45 @@
     font-style: italic;
 }
 
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/MaterialIcons/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(../fonts/MaterialIcons/MaterialIcons-Regular.woff2) format('woff2'),
+    url(../fonts/MaterialIcons/MaterialIcons-Regular.woff) format('woff'),
+    url(../fonts/MaterialIcons/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
 body {
     font-family: 'Roboto', Fallback, sans-serif;
     margin: 0;
@@ -63,4 +102,51 @@ body {
 
 .left-nav-closed {
     width: 0;
+}
+
+.transfers {
+    overflow-y: auto;
+    width: auto;
+    max-height: 100vh;
+}
+
+/* Torrent Component */
+.torrent-row {
+    padding: 3%;
+}
+
+.torrent-name {
+    font-size: 14px;
+}
+
+.torrent-progress {
+    font-size: 10px;
+}
+
+.torrent-status {
+    font-size: 10px;
+}
+
+.torrent-info {
+    width: 75%;
+    display: inline-block;
+}
+
+.torrent-select {
+    width: 5%;
+    float: left;
+    margin-top: 30px;
+    margin-right: 10px;
+}
+
+.torrent-actions {
+    display: inline-block;
+    float: right;
+    position: relative;
+    margin-top: 40px;
+    margin-left: 10px;
+}
+
+.torrent-actions .material-icons {
+    margin-left: 15px;
 }
