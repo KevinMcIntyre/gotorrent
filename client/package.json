@@ -1,0 +1,36 @@
+{
+  "name": "go-torrent-client",
+  "version": "1.0.0",
+  "author": "Kevin McIntyre",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
+    "watch": "./node_modules/.bin/webpack-dev-server",
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.24",
+    "babel-loader": "^5.3.2",
+    "css-loader": "^0.18.0",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "electron-packager": "^5.1.0",
+    "electron-rebuild": "^1.0.0",
+    "node-libs-browser": "^0.5.2",
+    "webpack": "^1.12.1",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "bluebird": "^2.10.0",
+    "electron-prebuilt": "^0.32.1",
+    "react": "^0.14.2",
+    "react-dom": "^0.14.2",
+    "react-router": "^1.0.0-rc4",
+    "history": "^1.13.0",
+    "material-ui": "^0.13.1",
+    "react-dropzone": "^3.0.0",
+    "redux": "^3.0.0"
+  }
+}
