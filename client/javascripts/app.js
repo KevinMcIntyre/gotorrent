@@ -39,7 +39,7 @@ const App = React.createClass({
     },
     leftNavStyle: {
         height: "100vh",
-        position: "inherit",
+        position: "relative",
         float: "left",
         width: "20%",
         transform: "none"
@@ -117,7 +117,7 @@ ipc.on('event', function (arg) {
     switch (arg) {
         case "open-torrent":
         {
-            chooseFile(".open-torrent");
+            ipc.send("open-torrent");
             break;
         }
         case "open-magnet":

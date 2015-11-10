@@ -130,6 +130,11 @@ body {
 .torrent-info {
     width: 75%;
     display: inline-block;
+    cursor: pointer;
+}
+
+.torrent-selected {
+    background-color: antiquewhite;
 }
 
 .torrent-select {
@@ -143,10 +148,14 @@ body {
     display: inline-block;
     float: right;
     position: relative;
-    margin-top: 40px;
-    margin-left: 10px;
+    margin-top: 45px;
+    margin-right: 20px;
 }
 
 .torrent-actions .material-icons {
     margin-left: 15px;
+}
+
+.action-button {
+    cursor: pointer;
 }

@@ -2,6 +2,7 @@ var app = require('app'),
     Menu = require('menu'),
     BrowserWindow = require('browser-window'),
     Dialog = require('dialog'),
+    Shell = require('shell'),
     Promise = require('bluebird'),
     net = require('net'),
     ipc = require('ipc'),
@@ -80,6 +81,12 @@ app.on('ready', function () {
                 ipc.on('torrent', function(event, arg) {
                     console.log("RECEIVED");
                     console.log(arg);
+                });
+                ipc.on('open-torrent', function(event, arg) {
+                    openTorrentDialog(mainWindow);
+                });
+                ipc.on('open-folder', function(event, arg) {
+                    Shell.openItem(arg)
                 });
             })
             .catch(function (err) {
@@ -294,11 +301,6 @@ function initMenu(window) {
                     label: 'Hide ' + name,
                     accelerator: 'Command+H',
                     role: 'hide'
-                },
-                {
-                    label: 'Hide Others',
-                    accelerator: 'Command+Shift+H',
-                    role: 'hideothers'
                 },
                 {
                     label: 'Show All',
