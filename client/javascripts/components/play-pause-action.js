@@ -3,25 +3,24 @@ require('../../css/main.css');
 'use strict';
 
 import React from "react";
-import {FontIcon} from "material-ui";
+import { FontIcon } from "material-ui";
 
-export const PlayPause = React.createClass({
-    getInitialState: function () {
-        return {
-            paused: this.props.isPaused
-        }
-    },
-    setPause: function() {
-        this.setState({
-            paused: !this.state.paused
-        });
-    },
-    render: function () {
+export default class PlayPause extends React.Component {
+    constructor(props) {
+        super(props);
+        this.setPause = this.setPause.bind(this);
+    }
+
+    setPause() {
+        this.props.onClick();
+    }
+
+    render() {
         var icon;
-        if (this.state.paused) {
-            icon = <FontIcon className="material-icons">pause_circle_outline</FontIcon>
-        } else {
+        if (this.props.isPaused) {
             icon = <FontIcon className="material-icons">play_circle_outline</FontIcon>
+        } else {
+            icon = <FontIcon className="material-icons">pause_circle_outline</FontIcon>
         }
         return (
             <span className="action-button" onClick={this.setPause}>
@@ -29,4 +28,4 @@ export const PlayPause = React.createClass({
             </span>
         );
     }
-});
+}

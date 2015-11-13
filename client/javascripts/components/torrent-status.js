@@ -5,21 +5,25 @@ require('../../css/main.css');
 import React from "react";
 
 function formatKilobytes(kilobytes) {
-    return parseFloat(kilobytes/1000000).toFixed(2);
+    kilobytes = parseInt(kilobytes);
+    return parseFloat(kilobytes / 1000000).toFixed(2);
 }
 
-export const TorrentStatus = React.createClass({
-    render: function () {
-        var torrentStatus;
-        //if (this.state.paused) {
-            torrentStatus = "Paused";
-        //} else {
-        //    torrentStatus = `Downloading from ${this.props.torrent.activePeers} of ${this.props.torrent.totalPeers} - DL: ${formatKilobytes(this.props.torrent.downloadInKBytes)}, UL: ${formatKilobytes(this.props.torrent.uploadInKBytes)}`;
-        //}
+export default class TorrentStatus extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var status;
+        if (this.props.isPaused) {
+            status = "Paused";
+        } else {
+            status = `Downloading from ${this.props.activePeers} of ${this.props.totalPeers} - DL: ${formatKilobytes(this.props.download)}, UL: ${formatKilobytes(this.props.upload)}`;
+        }
         return (
             <h3 className="torrent-status">
-                {torrentStatus}
+                { status }
             </h3>
         );
     }
-});
+}
