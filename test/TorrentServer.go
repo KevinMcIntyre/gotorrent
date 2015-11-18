@@ -5,6 +5,7 @@ import (
 	"net"
 	"strconv"
 	"time"
+	"fmt"
 )
 
 func server(socket net.Conn) {
@@ -27,6 +28,10 @@ func server(socket net.Conn) {
 			{
 				stopWork <- true
 				socket.Write([]byte("received stop command\n"))
+			}
+		default:
+			{
+				socket.Write([]byte(fmt.Sprintln("received: %s", message)))
 			}
 		}
 	}

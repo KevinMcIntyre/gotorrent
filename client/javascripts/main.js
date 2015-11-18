@@ -12,7 +12,7 @@ import { updatePath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { store } from './app.js';
-import  { addTorrent, toggleNav } from './actions/actions.js'
+import  { addTorrent, updateTorrent, toggleNav } from './actions/actions.js'
 
 injectTapEventPlugin();
 
@@ -27,6 +27,20 @@ const menuItems = [
     { text: 'Forum' }
 ];
 
+export function addTorrentFiles(files) {
+    let pathArray = [];
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].type.indexOf("torrent") > -1) {
+            pathArray.push(files[i].path);
+        }
+    }
+    if (pathArray.length > 0) {
+        for (let i = 0; i < pathArray.length; i++) {
+            store.dispatch(addTorrent({path: pathArray[i], isMagnet: false}));
+        }
+    }
+}
+
 class GoTorrent extends React.Component {
     constructor(props) {
         super(props);
@@ -39,18 +53,11 @@ class GoTorrent extends React.Component {
         };
 
         this.toggleLeftNav = this.toggleLeftNav.bind(this);
+        this.fileDrop = this.fileDrop.bind(this);
     }
 
     fileDrop(files) {
-        let pathArray = [];
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].type.indexOf("torrent") > -1) {
-                pathArray.push(files[i].path);
-            }
-        }
-        if (pathArray.length > 0) {
-            ipc.send("torrent", pathArray);
-        }
+        addTorrentFiles(files);
     }
 
     toggleLeftNav() {
@@ -116,8 +123,12 @@ ipc.on('event', function (arg) {
     }
 });
 
-ipc.on('message', function (arg) {
-    console.log(arg);
+ipc.on('add-torrent-files', function (files) {
+    addTorrentFiles(files);
+});
+
+ipc.on('torrent-update', function (torrentObj) {
+    store.dispatch(updateTorrent(torrentObj));
 });
 
 function mapStateToProps(state) {
@@ -129,6 +140,7 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps, {
         addTorrent,
+        updateTorrent,
         toggleNav
     }
 )(GoTorrent);

@@ -15,8 +15,6 @@ var app = require('app'),
 
 require('crash-reporter').start();
 
-
-
 app.on('window-all-closed', function () {
     if (process.platform != 'darwin') {
         app.quit();
@@ -27,7 +25,6 @@ app.on('ready', function () {
     mainWindow = new BrowserWindow({width: 800, height: 600, "min-width": 800});
     initMenu(mainWindow);
     mainWindow.loadUrl('file://' + __dirname + '/public/index.html');
-    //mainWindow.openDevTools();
     mainWindow.on('closed', function () {
         mainWindow = null;
     });
@@ -35,7 +32,9 @@ app.on('ready', function () {
     var connect = function () {
         var spawnTorrentServer = function () {
             return new Promise(function (resolve, reject) {
-                var child = spawn("./TorrentServer", [], {cwd: path.resolve(process.cwd(), '../src/')});
+                var child = spawn("./gotorrent", [], {
+                    cwd: path.resolve(process.cwd(), '../src/')
+                });
                 if (child.pid != undefined) {
                     resolve(child);
                 } else {
@@ -45,64 +44,58 @@ app.on('ready', function () {
         };
         return new Promise(function (resolve, reject) {
             spawnTorrentServer()
-            .then(function (torrentServer) {
-                gotorrent = torrentServer;
-                gotorrent.on('error', function (err) {
-                    console.log("An error occured while with torrent server", err);
-                });
-            })
-            .then(function () {
-                return net.createConnection({path: '/tmp/gotorrent'}, function () {
-                    console.log('Connected to socket!');
-                });
-            })
-            .then(function(connection) {
-                socket = connection;
-                socket.on('data', function (data) {
-                    data = data.toString('utf8').split("\n");
-                    data.forEach(function(datum) {
-                        if (datum != "")
-                        mainWindow.webContents.send("message", datum);
+                .then(function (torrentServer) {
+                    gotorrent = torrentServer;
+                })
+                .then(function () {
+                    gotorrent.stdout.on('data',
+                        function (data) {
+                            data = JSON.parse(data.toString('utf8'));
+                            mainWindow.webContents.send("torrent-update", data);
+                        }
+                    );
+
+                    gotorrent.stderr.on('data',
+                        function (data) {
+                            console.log("GOLANG-ERROR: " + data.toString('utf8'));
+                        }
+                    );
+                })
+                .then(function () {
+                    ipc.on('torrent', function (event, torrent) {
+                        request = {
+                            "id": "start-torrent",
+                            "body": {
+                                "id": torrent.id,
+                                "path": torrent.path,
+                                "isMagnet": torrent.isMagnet
+                            }
+                        };
+                        gotorrent.stdin.write(JSON.stringify(request) + "\n");
                     });
 
-                });
-                socket.on('end', function () {
-                    console.log('Disconnected from socket.');
-                });
-            })
-            .then(function () {
-                ipc.on('toggle-process', function (event, arg) {
-                    if (arg == "start") {
-                        socket.write(arg);
-                    } else if (arg == "stop") {
-                        socket.write(arg);
+                    ipc.on('open-torrent', function (event, arg) {
+                        openTorrentDialog(mainWindow);
+                    });
+
+                    ipc.on('open-folder', function (event, arg) {
+                        Shell.openItem(arg)
+                    });
+                })
+                .catch(function (err) {
+                    console.log("Error while spawning torrent server.", err);
+                    if (gotorrent != undefined) {
+                        gotorrent.kill();
+                        connect();
                     }
                 });
-                ipc.on('torrent', function(event, arg) {
-                    console.log("RECEIVED");
-                    console.log(arg);
-                });
-                ipc.on('open-torrent', function(event, arg) {
-                    openTorrentDialog(mainWindow);
-                });
-                ipc.on('open-folder', function(event, arg) {
-                    Shell.openItem(arg)
-                });
-            })
-            .catch(function (err) {
-                console.log("Error while spawning torrent server.", err);
-                if (gotorrent != undefined) {
-                    gotorrent.kill();
-                    connect();
-                }
-            });
         });
     };
 
     connect()
-    .then(function() {
-        console.log("swag");
-    });
+        .then(function () {
+            console.log("swag");
+        });
 
     process.on("uncaughtException", function (err) {
         console.log(err);
@@ -138,17 +131,17 @@ app.on('ready', function () {
 });
 
 function openTorrentDialog(window) {
-    Dialog.showOpenDialog(window,{
+    Dialog.showOpenDialog(window, {
         title: "Open a torrent file",
-        filters: [{ name: 'Torrents', extensions: ['torrent'] }],
+        filters: [{name: 'Torrents', extensions: ['torrent']}],
         properties: ['openFile', 'multiSelections']
-    }, function(fileNames) {
+    }, function (fileNames) {
         launchTorrentDownloads(fileNames);
     });
 }
 
-function launchTorrentDownloads(fileNames) {
-    console.dir(fileNames);
+function launchTorrentDownloads(files) {
+    mainWindow.webContents.send("add-torrent-files", files);
 }
 
 function initMenu(window) {
@@ -159,14 +152,14 @@ function initMenu(window) {
                 {
                     label: 'Open Torrent File',
                     accelerator: 'CmdOrCtrl+O',
-                    click: function() {
+                    click: function () {
                         openTorrentDialog(window);
                     }
                 },
                 {
                     label: 'Open Magnet Link',
                     accelerator: 'CmdOrCtrl+U',
-                    click: function() {
+                    click: function () {
                         mainWindow.webContents.send("event", "open-magnet");
                     }
                 }
@@ -216,33 +209,33 @@ function initMenu(window) {
                 {
                     label: 'Reload',
                     accelerator: 'CmdOrCtrl+R',
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow)
                             focusedWindow.reload();
                     }
                 },
                 {
                     label: 'Toggle Full Screen',
-                    accelerator: (function() {
+                    accelerator: (function () {
                         if (process.platform == 'darwin')
                             return 'Ctrl+Command+F';
                         else
                             return 'F11';
                     })(),
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow)
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                     }
                 },
                 {
                     label: 'Toggle Developer Tools',
-                    accelerator: (function() {
+                    accelerator: (function () {
                         if (process.platform == 'darwin')
                             return 'Alt+Command+I';
                         else
                             return 'Ctrl+Shift+I';
                     })(),
-                    click: function(item, focusedWindow) {
+                    click: function (item, focusedWindow) {
                         if (focusedWindow)
                             focusedWindow.toggleDevTools();
                     }
@@ -271,7 +264,9 @@ function initMenu(window) {
             submenu: [
                 {
                     label: 'Learn More',
-                    click: function() { require('shell').openExternal('http://electron.atom.io') }
+                    click: function () {
+                        require('shell').openExternal('http://electron.atom.io')
+                    }
                 }
             ]
         }
@@ -312,7 +307,9 @@ function initMenu(window) {
                 {
                     label: 'Quit',
                     accelerator: 'Command+Q',
-                    click: function() { app.quit(); }
+                    click: function () {
+                        app.quit();
+                    }
                 },
             ]
         });

@@ -1,26 +1,11 @@
 import {List, Map} from "immutable";
-import _ from "lodash";
-import { ADD_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV } from '../actions/actions.js';
+import { ADD_TORRENT, UPDATE_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV } from '../actions/actions.js';
 
-const initId = _.uniqueId;
+const ipc = electronRequire("ipc");
+
 const torrentState = Map({
-        "torrents": List([1]),
-        "torrentsById": Map({
-            "1": {
-                id: 1,
-                name: "arch-linux-4.3-server-amd64.iso",
-                kBytesCompleted: 20634,
-                sizeInKBytes: 1050000,
-                filePath: '/Users/Kevin/Music',
-                activePeers: 50,
-                totalPeers: 60,
-                downloadInKBytes: 50043,
-                uploadInKBytes: 10342,
-                isPaused: false,
-                isSelected: false,
-                isInit: true
-            }
-        })
+        "torrents": List([]),
+        "torrentsById": Map({})
     }
 );
 
@@ -28,28 +13,37 @@ export function torrentReducer(state = torrentState, action = null) {
     switch (action.type) {
         case ADD_TORRENT:
         {
-            const newId = _.uniqueId;
+            let prevId = state.get("torrents").last();
+            const newId = prevId == undefined ? 1 : (state.get("torrents").last() + 1);
             const torrent = {
                 id: newId,
-                name: action.name,
-                kBytesCompleted: 0,
-                sizeInKBytes: null,
-                filePath: action.path,
-                activePeers: null,
-                totalPeers: null,
-                downloadInKBytes: 0,
-                uploadInKBytes: 0,
+                name: '',
+                bytesComplete: '',
+                sizeInBytes: '',
+                filePath: action.info.path,
+                activePeers: '',
+                totalPeers: '',
+                download: '',
+                upload: '',
                 isPaused: false,
                 isSelected: false,
-                isInit: false
+                isInit: false,
+                isMagnet: action.info.isMagnet
             };
+
+            ipc.send("torrent", {
+                id: torrent.id,
+                path: torrent.filePath,
+                isMagnet: torrent.isMagnet
+            });
+
             return state
                 .set(
                 "torrents",
                 state.get("torrents").push(newId)
             ).set(
                 "torrentsById",
-                state.get("torrentsById").set(newId, torrent)
+                state.get("torrentsById").set(newId.toString(), torrent)
             );
         }
         case SELECT_TORRENT:
@@ -70,6 +64,23 @@ export function torrentReducer(state = torrentState, action = null) {
                 .set(
                 "torrentsById",
                 state.get("torrentsById").set(action.id, torrent)
+            );
+        }
+        case UPDATE_TORRENT:
+        {
+            const torrentId = action.torrent.id.toString();
+            const oldTorrentState = state.get("torrentsById").get(torrentId);
+            const newTorrentState = Object.assign({}, action.torrent, {
+                isPaused: oldTorrentState.isPaused,
+                isSelected: oldTorrentState.isSelected,
+                isInit: true,
+                isMagnet: oldTorrentState.isMagnet
+            });
+
+            return state
+                .set(
+                "torrentsById",
+                state.get("torrentsById").set(torrentId, newTorrentState)
             );
         }
         default :

@@ -28,21 +28,25 @@ class Transfers extends React.Component {
 
         for (let i = 0; i < torrents.size; i++) {
             const torrent = torrentsById.get(torrents.get(i).toString());
-            torrentElems.push(
-                <Torrent
-                key={torrent.id.toString()}
-                onClick={this.selectTorrent.bind(this, torrent.id.toString())}
-                onPause={this.pauseTorrent.bind(this, torrent.id.toString())}
-                name={torrent.name}
-                kBytesCompleted={torrent.kBytesCompleted.toString()}
-                sizeInKBytes={torrent.sizeInKBytes.toString()}
-                activePeers={torrent.activePeers.toString()}
-                totalPeers={torrent.totalPeers.toString()}
-                download={torrent.downloadInKBytes.toString()}
-                upload={torrent.uploadInKBytes.toString()}
-                isPaused={torrent.isPaused}
-                filePath={torrent.filePath}
-                isSelected={torrent.isSelected} />)
+            if (torrent != undefined) {
+                torrentElems.push(
+                    <Torrent
+                        key={torrent.id.toString()}
+                        onClick={this.selectTorrent.bind(this, torrent.id.toString())}
+                        onPause={this.pauseTorrent.bind(this, torrent.id.toString())}
+                        name={torrent.name}
+                        bytesComplete={torrent.bytesComplete}
+                        sizeInBytes={torrent.sizeInBytes}
+                        activePeers={torrent.activePeers}
+                        totalPeers={torrent.totalPeers}
+                        download={torrent.download}
+                        upload={torrent.upload}
+                        isPaused={torrent.isPaused}
+                        filePath={torrent.filePath}
+                        isSelected={torrent.isSelected}
+                        isInit={torrent.isInit} />
+                )
+            }
         }
 
         return (
