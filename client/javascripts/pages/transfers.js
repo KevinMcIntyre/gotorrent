@@ -17,6 +17,10 @@ class Transfers extends React.Component {
         this.props.selectTorrent(id);
     }
 
+    removeTorrent(id) {
+        this.props.removeTorrent(id);
+    }
+
     pauseTorrent(id) {
         this.props.pauseTorrent(id);
     }
@@ -34,6 +38,7 @@ class Transfers extends React.Component {
                         key={torrent.id.toString()}
                         onClick={this.selectTorrent.bind(this, torrent.id.toString())}
                         onPause={this.pauseTorrent.bind(this, torrent.id.toString())}
+                        onClose={this.removeTorrent.bind(this, torrent.id.toString())}
                         name={torrent.name}
                         bytesComplete={torrent.bytesComplete}
                         sizeInBytes={torrent.sizeInBytes}
@@ -49,11 +54,20 @@ class Transfers extends React.Component {
             }
         }
 
+        const noTorrents =
+            <div className="empty-transfers">
+                <h1 className="empty-transfers-msg">
+                    No active transfers.
+                    <br />
+                    Add a torrent to start a transfer.
+                </h1>
+            </div>;
+
         return (
             <div>
                 <TransferBar />
                 <div className="transfers">
-                    {torrentElems}
+                    {torrentElems.length > 0 ? torrentElems : noTorrents}
                 </div>
             </div>
         );

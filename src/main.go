@@ -38,7 +38,6 @@ func main() {
 						worker.Id = request.Id
 						worker.FilePath = request.Path
 						worker.WorkerChan = &workerChan
-
 						workerMap[worker.Id] = &worker
 
 						go worker.Init(client, request.IsMagnet)
@@ -49,6 +48,9 @@ func main() {
 					{
 						request := StopTorrentRequest{}
 						json.Unmarshal(*clientRequest.Body, &request)
+						workerChan := *workerMap[request.Id].WorkerChan
+						workerChan <- "stop"
+						delete(workerMap, request.Id)
 						break
 					}
 				default:
@@ -59,10 +61,10 @@ func main() {
 			}
 		case torrentResponse := <-torrentChan:
 			{
-				log.Println(torrentResponse.Id);
-//				switch torrentResponse.Id {
-//
-//				}
+				log.Println(torrentResponse.Id)
+				//				switch torrentResponse.Id {
+				//
+				//				}
 			}
 		default:
 			{

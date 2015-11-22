@@ -7,6 +7,11 @@ import { FontIcon } from 'material-ui';
 
 let ipc = electronRequire("ipc");
 
+function trimFilePath(filePath) {
+    const splitFilePath = filePath.split("/");
+    return filePath.replace(splitFilePath[splitFilePath.length - 1], "");
+}
+
 export default class OpenFolder extends React.Component {
     constructor(props) {
         super(props);
@@ -14,7 +19,7 @@ export default class OpenFolder extends React.Component {
     }
 
     openFolder() {
-        ipc.send('open-folder', this.props.filePath);
+        ipc.send('open-folder', trimFilePath(this.props.filePath));
     }
 
     render() {

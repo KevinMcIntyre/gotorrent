@@ -62,13 +62,23 @@ app.on('ready', function () {
                     );
                 })
                 .then(function () {
-                    ipc.on('torrent', function (event, torrent) {
+                    ipc.on('start-torrent', function (event, torrent) {
                         request = {
                             "id": "start-torrent",
                             "body": {
                                 "id": torrent.id,
                                 "path": torrent.path,
                                 "isMagnet": torrent.isMagnet
+                            }
+                        };
+                        gotorrent.stdin.write(JSON.stringify(request) + "\n");
+                    });
+
+                    ipc.on('stop-torrent', function (event, torrentId) {
+                        request = {
+                            "id": "stop-torrent",
+                            "body": {
+                                "id": parseInt(torrentId)
                             }
                         };
                         gotorrent.stdin.write(JSON.stringify(request) + "\n");

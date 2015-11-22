@@ -1,36 +1,36 @@
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-Regular.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-Regular.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-Italic.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-Italic.ttf') format('truetype');
     font-style: italic;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-Bold.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-Bold.ttf') format('truetype');
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-BoldItalic.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-BoldItalic.ttf') format('truetype');
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-Light.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-Light.ttf') format('truetype');
     font-weight: 300;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/Roboto/Roboto-LightItalic.ttf')  format('truetype');
+    src: url('../fonts/Roboto/Roboto-LightItalic.ttf') format('truetype');
     font-weight: 300;
     font-style: italic;
 }
@@ -51,7 +51,7 @@
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
+    font-size: 24px; /* Preferred icon size */
     display: inline-block;
     width: 1em;
     height: 1em;
@@ -95,7 +95,7 @@ body {
 }
 
 .dropzone-div {
-    height:100vh;
+    height: 100vh;
     width: 100%;
     overflow-y: hidden;
 }
@@ -127,10 +127,23 @@ body {
     font-size: 10px;
 }
 
+.torrent-body {
+    width: 90%;
+    overflow: auto;
+}
+
 .torrent-info {
-    width: 75%;
+    width: 80%;
     display: inline-block;
     cursor: pointer;
+}
+
+.torrent-actions {
+    width: 20%;
+    display: inline-block;
+    position: relative;
+    bottom: 6px;
+    left: 20px;
 }
 
 .torrent-selected {
@@ -144,13 +157,18 @@ body {
     margin-right: 10px;
 }
 
-.torrent-actions {
-    display: inline-block;
-    float: right;
-    position: relative;
-    margin-top: 45px;
-    margin-right: 20px;
-}
+
+
+/*@media (max-width: 600px) {*/
+    /*.torrent-actions {*/
+        /*display: inline-block;*/
+        /*float: right;*/
+        /*position: relative;*/
+        /*top: 45px;*/
+        /*right: 20px;*/
+    /*}*/
+/*}*/
+
 
 .torrent-actions .material-icons {
     margin-left: 15px;
@@ -158,4 +176,26 @@ body {
 
 .action-button {
     cursor: pointer;
+}
+
+.empty-transfers {
+    position: relative;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    border-radius: 3px;
+    cursor: default;
+}
+
+.empty-transfers-msg {
+    text-align: center;
+    padding-top: 20%;
+    color: rgba(0, 0, 0, 0.25)
+}
+
+.close-button {
+    overflow: auto;
 }

@@ -4,7 +4,7 @@ require('../../css/main.css');
 
 import React from "react";
 import { Checkbox, LinearProgress, FontIcon } from 'material-ui';
-import { PlayPause, OpenFolder, TorrentStatus } from './index.js';
+import { PlayPause, OpenFolder, TorrentStatus, Close } from './index.js';
 import { formatBytes, formatToPercentString } from '../utils/formatters.js'
 
 function getFileNameFromPath(path) {
@@ -44,7 +44,7 @@ export default class Torrent extends React.Component {
                 </h2>
                 <LinearProgress
                     mode="determinate"
-                    value={Math.floor((this.props.bytesComplete / this.props.sizeInBytes) * 100)}  />
+                    value={Math.floor((this.props.bytesComplete / this.props.sizeInBytes) * 100)} />
                 <TorrentStatus
                     isPaused={this.props.isPaused}
                     activePeers={this.props.activePeers}
@@ -65,6 +65,7 @@ export default class Torrent extends React.Component {
         return (
             <div>
                 <div ref="torrentRow" className="torrent-row">
+                    <Close torrentId={this.props.key} onClick={this.props.onClose} />
                     <div className="torrent-select">
                         <Checkbox
                             ref="checkbox"
@@ -72,12 +73,14 @@ export default class Torrent extends React.Component {
                             value={this.props.key}
                             onCheck={this.handleClick}/>
                     </div>
-                    <div className="torrent-info" onClick={this.handleClick}>
-                        { torrentBody }
-                    </div>
-                    <div className="torrent-actions">
-                        <PlayPause isPaused={this.props.isPaused} onClick={this.props.onPause}/>
-                        <OpenFolder filePath={this.props.filePath}/>
+                    <div className="torrent-body">
+                        <div className="torrent-info" onClick={this.handleClick}>
+                            { torrentBody }
+                        </div>
+                        <div className="torrent-actions">
+                            <PlayPause isPaused={this.props.isPaused} onClick={this.props.onPause}/>
+                            <OpenFolder filePath={this.props.filePath}/>
+                        </div>
                     </div>
                 </div>
             </div>

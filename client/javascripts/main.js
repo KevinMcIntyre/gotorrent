@@ -12,31 +12,38 @@ import { updatePath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { store } from './app.js';
-import  { addTorrent, updateTorrent, toggleNav } from './actions/actions.js'
+import { addTorrent, updateTorrent, toggleNav } from './actions/actions.js';
 
 injectTapEventPlugin();
 
 // NOTE: electronRequire is defined in index.js
 const ipc = electronRequire("ipc");
 const menuItems = [
-    { type: MenuItem.Types.SUBHEADER, text: 'Files' },
-    { route: 'transfers', text: 'Transfers' },
-    { text: 'Library' },
-    { type: MenuItem.Types.SUBHEADER, text: 'Community' },
-    { route: 'chat', text: 'Peer Chat' },
-    { text: 'Forum' }
+    { type: MenuItem.Types.SUBHEADER, text: 'Transfers' },
+    { route: 'transfers', text: 'All' },
+    { route: 'transfers', text: 'Downloading' },
+    { route: 'transfers', text: 'Complete' },
 ];
 
 export function addTorrentFiles(files) {
     let pathArray = [];
-    for (let i = 0; i < files.length; i++) {
-        if (files[i].type.indexOf("torrent") > -1) {
-            pathArray.push(files[i].path);
+    if (files) {
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            if (typeof file === 'string') {
+                if (file.indexOf("torrent") > -1) {
+                    pathArray.push(file);
+                }
+            } else {
+                if (file.type.indexOf("torrent") > -1) {
+                    pathArray.push(file.path);
+                }
+            }
         }
-    }
-    if (pathArray.length > 0) {
-        for (let i = 0; i < pathArray.length; i++) {
-            store.dispatch(addTorrent({path: pathArray[i], isMagnet: false}));
+        if (pathArray.length > 0) {
+            for (let i = 0; i < pathArray.length; i++) {
+                store.dispatch(addTorrent({path: pathArray[i], isMagnet: false}));
+            }
         }
     }
 }
@@ -80,16 +87,11 @@ class GoTorrent extends React.Component {
 
     render() {
         return (
+            <div>
             <Dropzone ref="dropzone" className="dropzone-div" onDrop={this.fileDrop} disableClick={true}
                       accept={".torrent"}>
                 <AppBar title="GoTorrent"
-                        onLeftIconButtonTouchTap={this.toggleLeftNav}
-                        iconElementRight={
-                            <IconButton>
-                                <NavigationMoreVert />
-                            </IconButton>
-                        }
-                    />
+                        onLeftIconButtonTouchTap={this.toggleLeftNav} />
                 <LeftNav className="left-nav"
                          ref="leftNav"
                          menuItems={menuItems}
@@ -100,6 +102,7 @@ class GoTorrent extends React.Component {
                     {this.props.children}
                 </div>
             </Dropzone>
+            </div>
         );
     }
 }

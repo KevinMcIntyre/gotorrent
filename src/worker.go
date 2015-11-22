@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/anacrolix/torrent"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"github.com/anacrolix/torrent"
 	"log"
 	"time"
 )
@@ -13,16 +13,16 @@ type Worker struct {
 	FilePath   string
 	WorkerChan *chan string
 	Torrent    *torrent.Torrent
-	Err			error
+	Err        error
 }
 
 func (worker Worker) Init(client *torrent.Client, isMagnet bool) {
-	if (isMagnet) {
+	if isMagnet {
 		log.Println("MAGNETS!")
 	} else {
 		torrent, err := client.AddTorrentFromFile(worker.FilePath)
 		if err != nil {
-			worker.Err = err;
+			worker.Err = err
 		}
 		worker.Torrent = &torrent
 		<-torrent.GotInfo()
@@ -31,25 +31,45 @@ func (worker Worker) Init(client *torrent.Client, isMagnet bool) {
 
 		response, _ := json.Marshal(torrentResponse)
 
-		fmt.Println(string(response));
+		fmt.Println(string(response))
 
-		go worker.Work();
+		go worker.Work()
 	}
 }
 
 func (worker Worker) Work() {
-	worker.Torrent.DownloadAll();
+	worker.Torrent.DownloadAll()
+WorkerLoop:
 	for {
-		time.Sleep(time.Millisecond * 750)
+		select {
+		case workerRequest := <-*worker.WorkerChan:
+			{
+				switch workerRequest {
+				case "stop":
+					{
+						worker.Torrent.Drop()
+						break WorkerLoop
+					}
+				default:
+					{
+						break
+					}
+				}
+			}
+		default:
+			{
+				time.Sleep(time.Millisecond * 750)
 
-		torrentResponse := NewTorrentResponse(worker.Id, worker.FilePath, *worker.Torrent)
+				torrentResponse := NewTorrentResponse(worker.Id, worker.FilePath, *worker.Torrent)
 
-		response, _ := json.Marshal(torrentResponse)
+				response, _ := json.Marshal(torrentResponse)
 
-		fmt.Println(string(response));
+				fmt.Println(string(response))
 
-		if worker.Torrent.BytesCompleted() == worker.Torrent.Length() {
-			break;
+				if worker.Torrent.BytesCompleted() == worker.Torrent.Length() {
+					break
+				}
+			}
 		}
 	}
 }

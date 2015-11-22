@@ -1,5 +1,5 @@
 import {List, Map} from "immutable";
-import { ADD_TORRENT, UPDATE_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV } from '../actions/actions.js';
+import { ADD_TORRENT, REMOVE_TORRENT, UPDATE_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV } from '../actions/actions.js';
 
 const ipc = electronRequire("ipc");
 
@@ -31,7 +31,7 @@ export function torrentReducer(state = torrentState, action = null) {
                 isMagnet: action.info.isMagnet
             };
 
-            ipc.send("torrent", {
+            ipc.send("start-torrent", {
                 id: torrent.id,
                 path: torrent.filePath,
                 isMagnet: torrent.isMagnet
@@ -39,12 +39,25 @@ export function torrentReducer(state = torrentState, action = null) {
 
             return state
                 .set(
-                "torrents",
-                state.get("torrents").push(newId)
-            ).set(
-                "torrentsById",
-                state.get("torrentsById").set(newId.toString(), torrent)
-            );
+                    "torrents",
+                    state.get("torrents").push(newId)
+                ).set(
+                    "torrentsById",
+                    state.get("torrentsById").set(newId.toString(), torrent)
+                );
+        }
+        case REMOVE_TORRENT:
+        {
+            ipc.send("stop-torrent", action.id);
+
+            return state
+                .set(
+                    "torrents",
+                    state.get("torrents").delete(state.get("torrents").indexOf(parseInt(action.id)))
+                ).set(
+                    "torrentsById",
+                    state.get("torrentsById").delete(action.id)
+                );
         }
         case SELECT_TORRENT:
         {
@@ -52,9 +65,9 @@ export function torrentReducer(state = torrentState, action = null) {
             torrent.isSelected = !torrent.isSelected;
             return state
                 .set(
-                "torrentsById",
-                state.get("torrentsById").set(action.id, torrent)
-            );
+                    "torrentsById",
+                    state.get("torrentsById").set(action.id, torrent)
+                );
         }
         case PAUSE_TORRENT:
         {
@@ -62,26 +75,30 @@ export function torrentReducer(state = torrentState, action = null) {
             torrent.isPaused = !torrent.isPaused;
             return state
                 .set(
-                "torrentsById",
-                state.get("torrentsById").set(action.id, torrent)
-            );
+                    "torrentsById",
+                    state.get("torrentsById").set(action.id, torrent)
+                );
         }
         case UPDATE_TORRENT:
         {
             const torrentId = action.torrent.id.toString();
             const oldTorrentState = state.get("torrentsById").get(torrentId);
-            const newTorrentState = Object.assign({}, action.torrent, {
-                isPaused: oldTorrentState.isPaused,
-                isSelected: oldTorrentState.isSelected,
-                isInit: true,
-                isMagnet: oldTorrentState.isMagnet
-            });
+            if (oldTorrentState) {
+                const newTorrentState = Object.assign({}, action.torrent, {
+                    isPaused: oldTorrentState.isPaused,
+                    isSelected: oldTorrentState.isSelected,
+                    isInit: true,
+                    isMagnet: oldTorrentState.isMagnet
+                });
 
-            return state
-                .set(
-                "torrentsById",
-                state.get("torrentsById").set(torrentId, newTorrentState)
-            );
+                return state
+                    .set(
+                    "torrentsById",
+                    state.get("torrentsById").set(torrentId, newTorrentState)
+                );
+            } else {
+                return state;
+            }
         }
         default :
         {

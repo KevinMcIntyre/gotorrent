@@ -1,9 +1,9 @@
 // Torrent Actions
-
 export const ADD_TORRENT = 'ADD_TORRENT';
 export const SELECT_TORRENT = 'SELECT_TORRENT';
 export const PAUSE_TORRENT = 'PAUSE_TORRENT';
 export const UPDATE_TORRENT = 'UPDATE_TORRENT';
+export const REMOVE_TORRENT = 'REMOVE_TORRENT';
 
 
 export function addTorrent(info) {
@@ -30,10 +30,21 @@ export function updateTorrent(torrent) {
     }
 }
 
+export function removeTorrent(id) {
+    return {
+        type: REMOVE_TORRENT, id
+    }
+}
 
 // UI Actions
-
 export const TOGGLE_NAV = 'TOGGLE_NAV';
+export const SHOW_CANCEL_MODAL = 'SHOW_CANCEL_MODAL';
+
+export function showCancelModal(open) {
+    return {
+        type: showCancelModal, open
+    }
+}
 
 export function toggleNav(open) {
     return {
