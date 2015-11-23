@@ -134,13 +134,13 @@ body {
 }
 
 .torrent-info {
-    width: 80%;
+    width: 75%;
     display: inline-block;
     cursor: pointer;
 }
 
 .torrent-actions {
-    width: 20%;
+    width: 15%;
     display: inline-block;
     position: relative;
     bottom: 6px;
