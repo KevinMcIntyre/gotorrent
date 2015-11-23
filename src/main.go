@@ -15,13 +15,9 @@ func main() {
 	defer client.Close()
 
 	clientChan := make(chan ClientRequest)
-	torrentChan := make(chan TorrentResponse)
-	workerChan := make(chan *Worker)
-
 	workerMap := make(map[int]*Worker)
 
 	go listenToClient(clientChan)
-	go handleTorrents(torrentChan, workerChan)
 
 	for {
 		select {
@@ -59,23 +55,12 @@ func main() {
 					}
 				}
 			}
-		case torrentResponse := <-torrentChan:
-			{
-				log.Println(torrentResponse.Id)
-				//				switch torrentResponse.Id {
-				//
-				//				}
-			}
 		default:
 			{
 				continue
 			}
 		}
 	}
-}
-
-func handleTorrents(torrentChan chan TorrentResponse, workerChan chan *Worker) {
-
 }
 
 func listenToClient(clientChan chan ClientRequest) {

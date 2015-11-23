@@ -18,6 +18,8 @@ export default class TorrentStatus extends React.Component {
         var status;
         if (this.props.isPaused) {
             status = "Paused";
+        } if (this.props.isComplete) {
+            status = "Download complete"
         } else {
             status = `Downloading from ${this.props.activePeers} of ${this.props.totalPeers} Peers - DL: ${formatKilobytes(this.props.download)}, UL: ${formatKilobytes(this.props.upload)}`;
         }

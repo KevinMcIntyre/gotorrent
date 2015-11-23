@@ -35,6 +35,7 @@ export default class Torrent extends React.Component {
     }
 
     render() {
+        let complete = this.props.bytesComplete / this.props.sizeInBytes;
         const torrentBody = this.props.isInit ?
             <div>
                 <h1 className="torrent-name">{this.props.name}</h1>
@@ -48,13 +49,15 @@ export default class Torrent extends React.Component {
                 </h2>
                 <LinearProgress
                     mode="determinate"
-                    value={Math.floor((this.props.bytesComplete / this.props.sizeInBytes) * 100)} />
+                    color={complete == 1 ? '#4CAF50' : ''}
+                    value={Math.floor(complete * 100)} />
                 <TorrentStatus
                     isPaused={this.props.isPaused}
                     activePeers={this.props.activePeers}
                     totalPeers={this.props.totalPeers}
                     download={this.props.download}
-                    upload={this.props.upload}/>
+                    upload={this.props.upload}
+                    isComplete={complete == 1} />
             </div>
             :
             <div>

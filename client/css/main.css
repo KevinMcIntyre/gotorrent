@@ -107,7 +107,7 @@ body {
 .transfers {
     overflow-y: auto;
     width: auto;
-    height: 480px;
+    height: 458px;
 }
 
 /* Torrent Component */
@@ -134,7 +134,7 @@ body {
 }
 
 .torrent-info {
-    width: 75%;
+    width: 80%;
     display: inline-block;
     cursor: pointer;
 }

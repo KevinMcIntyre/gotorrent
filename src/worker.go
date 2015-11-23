@@ -52,7 +52,7 @@ WorkerLoop:
 					}
 				default:
 					{
-						break
+						continue;
 					}
 				}
 			}
@@ -67,7 +67,7 @@ WorkerLoop:
 				fmt.Println(string(response))
 
 				if worker.Torrent.BytesCompleted() == worker.Torrent.Length() {
-					break
+					break WorkerLoop
 				}
 			}
 		}
