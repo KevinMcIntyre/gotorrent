@@ -29,6 +29,11 @@ app.on('ready', function () {
         mainWindow = null;
     });
 
+    mainWindow.on("resize", function(event) {
+        var windowHeight = mainWindow.getSize()[1];
+        mainWindow.webContents.send("window-resize", windowHeight);
+    });
+
     var connect = function () {
         var spawnTorrentServer = function () {
             return new Promise(function (resolve, reject) {

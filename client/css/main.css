@@ -107,7 +107,7 @@ body {
 .transfers {
     overflow-y: auto;
     width: auto;
-    max-height: 100vh;
+    height: 480px;
 }
 
 /* Torrent Component */

@@ -8,6 +8,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as TorrentActions from '../actions/actions.js';
 
+// NOTE: electronRequire is defined in index.js
+const ipc = electronRequire("ipc");
+
 class Transfers extends React.Component {
     constructor(props) {
         super(props);
@@ -73,6 +76,10 @@ class Transfers extends React.Component {
         );
     }
 }
+
+ipc.on("window-resize", function(windowHeight) {
+    document.querySelector(".transfers").style.height = ((windowHeight - 142).toString() + "px");
+});
 
 function mapStateToProps(state) {
     return {
