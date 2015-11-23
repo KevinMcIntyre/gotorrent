@@ -38,13 +38,6 @@ export function removeTorrent(id) {
 
 // UI Actions
 export const TOGGLE_NAV = 'TOGGLE_NAV';
-export const SHOW_CANCEL_MODAL = 'SHOW_CANCEL_MODAL';
-
-export function showCancelModal(open) {
-    return {
-        type: showCancelModal, open
-    }
-}
 
 export function toggleNav(open) {
     return {

@@ -18,6 +18,10 @@ export default class Torrent extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.bytesComplete !== this.props.bytesComplete) || (nextProps.isPaused !== this.props.isPaused);
+    }
+
     handleClick() {
         let select = this.props.isSelected;
         this.refs.checkbox.setChecked(!select);

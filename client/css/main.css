@@ -112,7 +112,8 @@ body {
 
 /* Torrent Component */
 .torrent-row {
-    padding: 3%;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 
 .torrent-name {
@@ -198,4 +199,6 @@ body {
 
 .close-button {
     overflow: auto;
+    position: relative;
+    top: 1em;
 }

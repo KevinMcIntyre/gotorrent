@@ -17,6 +17,10 @@ export default class TransferBar extends React.Component {
         };
     }
 
+    shouldComponentUpdate() {
+        return false;
+    }
+
     openTorrent() {
         ipc.send("open-torrent");
     }

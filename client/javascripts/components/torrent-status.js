@@ -13,12 +13,13 @@ export default class TorrentStatus extends React.Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         var status;
         if (this.props.isPaused) {
             status = "Paused";
         } else {
-            status = `Downloading from ${this.props.activePeers} of ${this.props.totalPeers} - DL: ${formatKilobytes(this.props.download)}, UL: ${formatKilobytes(this.props.upload)}`;
+            status = `Downloading from ${this.props.activePeers} of ${this.props.totalPeers} Peers - DL: ${formatKilobytes(this.props.download)}, UL: ${formatKilobytes(this.props.upload)}`;
         }
         return (
             <h3 className="torrent-status">

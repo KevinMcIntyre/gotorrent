@@ -13,18 +13,24 @@ export default class OpenFolder extends React.Component {
         this.closeTorrent = this.closeTorrent.bind(this);
     }
 
+    shouldComponentUpdate() {
+        return false;
+    }
+
     closeTorrent() {
         this.props.onClick();
     }
 
     render() {
         return (
-            <div className="close-button" onClick={this.closeTorrent}>
-                <FontIcon className="material-icons" style={{
-                    "fontSize": "14px",
-                    "cursor": "pointer",
-                    "float": "right"
-                }}>close</FontIcon>
+            <div className="close-button">
+                <a onClick={this.closeTorrent}>
+                    <FontIcon className="material-icons" style={{
+                        "fontSize": "14px",
+                        "cursor": "pointer",
+                        "float": "right"
+                    }}>close</FontIcon>
+                </a>
             </div>
         );
     }

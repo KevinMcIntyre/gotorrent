@@ -18,6 +18,10 @@ export default class OpenFolder extends React.Component {
         this.openFolder = this.openFolder.bind(this);
     }
 
+    shouldComponentUpdate() {
+        return false;
+    }
+
     openFolder() {
         ipc.send('open-folder', trimFilePath(this.props.filePath));
     }

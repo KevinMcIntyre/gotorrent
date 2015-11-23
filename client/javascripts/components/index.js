@@ -4,3 +4,4 @@ export const OpenFolder = require('./open-folder-action.js');
 export const TransferBar = require('./transferbar.js');
 export const TorrentStatus = require('./torrent-status.js');
 export const Close = require('./close-action.js');
+export const Nav = require('./nav.js');
