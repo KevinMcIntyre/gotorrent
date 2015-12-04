@@ -1,8 +1,8 @@
 {
-  "name": "go-torrent-client",
-  "version": "1.0.0",
+  "name": "GoTorrent",
+  "version": "0.0.1",
   "author": "Kevin McIntyre",
-  "license": "MIT",
+  "license": "GPL",
   "main": "main.js",
   "scripts": {
     "start": "./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
@@ -29,7 +29,7 @@
     "react-dom": "^0.14.2",
     "react-router": "^1.0.0",
     "history": "^1.13.0",
-    "material-ui": "^0.13.3",
+    "material-ui": "^0.13.4",
     "react-dropzone": "^3.0.0",
     "redux": "^3.0.4",
     "react-redux": "^4.0.0",

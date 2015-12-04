@@ -9,8 +9,8 @@ import injectTapEventPlugin from "react-tap-event-plugin"
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { store } from './app.js';
-import { addTorrent, updateTorrent } from './actions/actions.js';
-import { Nav } from './components/index.js';
+import { addTorrent, updateTorrent, toggleMagnetModal } from './actions/actions.js';
+import { Nav, MagnetModal } from './components/index.js';
 
 injectTapEventPlugin();
 
@@ -34,7 +34,10 @@ export function addTorrentFiles(files) {
         }
         if (pathArray.length > 0) {
             for (let i = 0; i < pathArray.length; i++) {
-                store.dispatch(addTorrent({path: pathArray[i], isMagnet: false}));
+                store.dispatch(addTorrent({
+                    path: pathArray[i],
+                    isMagnet: false
+                }));
             }
         }
     }
@@ -60,6 +63,7 @@ class GoTorrent extends React.Component {
                         {this.props.children}
                     </div>
                 </Dropzone>
+                <MagnetModal open={this.props.ui.get("magnetModalIsOpen")} />
             </div>
         );
     }
@@ -74,7 +78,10 @@ ipc.on('event', function (arg) {
         }
         case "open-magnet":
         {
-            console.log("magnets and shit");
+            let modalIsOpen = store.getState().ui.get("magnetModalIsOpen");
+            if (!modalIsOpen) {
+                store.dispatch(toggleMagnetModal(true));
+            }
             break;
         }
         default:

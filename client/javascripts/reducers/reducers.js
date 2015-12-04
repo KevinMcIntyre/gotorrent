@@ -1,5 +1,5 @@
 import {List, Map} from "immutable";
-import { ADD_TORRENT, REMOVE_TORRENT, UPDATE_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV } from '../actions/actions.js';
+import { ADD_TORRENT, REMOVE_TORRENT, UPDATE_TORRENT, SELECT_TORRENT, PAUSE_TORRENT, TOGGLE_NAV, TOGGLE_MAGNET_MODAL } from '../actions/actions.js';
 
 const ipc = electronRequire("ipc");
 
@@ -73,6 +73,17 @@ export function torrentReducer(state = torrentState, action = null) {
         {
             const torrent = state.get("torrentsById").get(action.id);
             torrent.isPaused = !torrent.isPaused;
+
+            if (torrent.isPaused) {
+                ipc.send("stop-torrent", torrent.id);
+            } else {
+                ipc.send("start-torrent", {
+                    id: torrent.id,
+                    path: torrent.filePath,
+                    isMagnet: torrent.isMagnet
+                });
+            }
+
             return state
                 .set(
                     "torrentsById",
@@ -108,7 +119,8 @@ export function torrentReducer(state = torrentState, action = null) {
 }
 
 const uiState = Map({
-        "navIsOpen": true
+        "navIsOpen": true,
+        "magnetModalIsOpen": false
     }
 );
 
@@ -116,7 +128,11 @@ export function uiReducer(state = uiState, action = null) {
     switch (action.type) {
         case TOGGLE_NAV:
         {
-            return state.set("navIsOpen", action.open)
+            return state.set("navIsOpen", action.open);
+        }
+        case TOGGLE_MAGNET_MODAL:
+        {
+            return state.set("magnetModalIsOpen", action.open);
         }
         default :
         {

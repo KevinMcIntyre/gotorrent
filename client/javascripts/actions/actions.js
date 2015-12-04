@@ -38,9 +38,16 @@ export function removeTorrent(id) {
 
 // UI Actions
 export const TOGGLE_NAV = 'TOGGLE_NAV';
+export const TOGGLE_MAGNET_MODAL = 'TOGGLE_MAGNET_MODAL';
 
 export function toggleNav(open) {
     return {
         type: TOGGLE_NAV, open
+    }
+}
+
+export function toggleMagnetModal(open) {
+    return {
+        type: TOGGLE_MAGNET_MODAL, open
     }
 }

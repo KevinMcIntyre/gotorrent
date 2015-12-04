@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/anacrolix/torrent"
-	"log"
 	"time"
 )
 
@@ -18,7 +17,12 @@ type Worker struct {
 
 func (worker Worker) Init(client *torrent.Client, isMagnet bool) {
 	if isMagnet {
-		log.Println("MAGNETS!")
+		torrent, err := client.AddMagnet(worker.FilePath)
+		if err != nil {
+			worker.Err = err
+		}
+		worker.Torrent = &torrent
+		<-torrent.GotInfo()
 	} else {
 		torrent, err := client.AddTorrentFromFile(worker.FilePath)
 		if err != nil {
@@ -26,15 +30,15 @@ func (worker Worker) Init(client *torrent.Client, isMagnet bool) {
 		}
 		worker.Torrent = &torrent
 		<-torrent.GotInfo()
-
-		torrentResponse := NewTorrentResponse(worker.Id, worker.FilePath, *worker.Torrent)
-
-		response, _ := json.Marshal(torrentResponse)
-
-		fmt.Println(string(response))
-
-		go worker.Work()
 	}
+
+	torrentResponse := NewTorrentResponse(worker.Id, worker.FilePath, *worker.Torrent)
+
+	response, _ := json.Marshal(torrentResponse)
+
+	fmt.Println(string(response))
+
+	go worker.Work()
 }
 
 func (worker Worker) Work() {
@@ -52,7 +56,7 @@ WorkerLoop:
 					}
 				default:
 					{
-						continue;
+						continue
 					}
 				}
 			}
